@@ -1,0 +1,50 @@
+scalar Time
+
+type ChatRoom {
+    id: ID!
+    title: String!
+    # client から呼び出される時には、フィールドを指定されて呼び出されるため、完全な形でスキーマを定義してしまって良い
+    # 例えば、チャットルームの一覧を表示する際に、comments はいらない場合には、client 側でそれ以外のフィールドを指定する形にする
+    comments: [Comment] # 関連は N に1の方の ID を持たせるのではなく、1に N を埋め込む 
+    createdBy: User!
+    createdAt: Time!
+}
+
+type Comment {
+    id: ID!
+    content: String!
+    postedBy: User!
+    createdAt: Time!
+}
+
+type User {
+    id: ID!
+    name: String!
+}
+
+type Query {
+    chatRooms: [ChatRoom]
+    chatRoom(chatRoomID: ID!): ChatRoom
+}
+
+input NewUser {
+    id: String!
+    name: String! # 簡易化のためにパスワード等は設定しない
+}
+
+input NewChatRoom {
+    title: String!
+    userID: String!
+}
+
+input NewComment {
+    content: String!
+    chatRoomID: String!
+    userID: String!
+}
+
+type Mutation {
+    createUser(input: NewUser!): User!
+    createChatRoom(input: NewChatRoom!): ChatRoom!
+    createComment(input: NewComment!): Comment!
+}
