@@ -2,16 +2,39 @@
 
 package gqlapi
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"time"
+)
+
+type ChatRoom struct {
+	ID        string     `json:"id"`
+	Title     string     `json:"title"`
+	Comments  []*Comment `json:"comments"`
+	CreatedBy *User      `json:"createdBy"`
+	CreatedAt time.Time  `json:"createdAt"`
 }
 
-type Todo struct {
+type Comment struct {
+	ID        string    `json:"id"`
+	Content   string    `json:"content"`
+	PostedBy  *User     `json:"postedBy"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type NewChatRoom struct {
+	Title  string `json:"title"`
+	UserID string `json:"userID"`
+}
+
+type NewComment struct {
+	Content    string `json:"content"`
+	ChatRoomID string `json:"chatRoomID"`
+	UserID     string `json:"userID"`
+}
+
+type NewUser struct {
 	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+	Name string `json:"name"`
 }
 
 type User struct {
