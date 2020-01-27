@@ -40,8 +40,9 @@ func (r *Resolver) User() UserResolver {
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input NewUser) (*model.User, error) {
-	panic("not implemented")
+	return r.UserApplicationService.CreateUser(input.ID, input.Name), nil
 }
+
 func (r *mutationResolver) CreateChatRoom(ctx context.Context, input NewChatRoom) (*ChatRoom, error) {
 	panic("not implemented")
 }
