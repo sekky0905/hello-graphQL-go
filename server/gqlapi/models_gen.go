@@ -4,21 +4,23 @@ package gqlapi
 
 import (
 	"time"
+
+	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 )
 
 type ChatRoom struct {
-	ID        string     `json:"id"`
-	Title     string     `json:"title"`
-	Comments  []*Comment `json:"comments"`
-	CreatedBy *User      `json:"createdBy"`
-	CreatedAt time.Time  `json:"createdAt"`
+	ID        string      `json:"id"`
+	Title     string      `json:"title"`
+	Comments  []*Comment  `json:"comments"`
+	CreatedBy *model.User `json:"createdBy"`
+	CreatedAt time.Time   `json:"createdAt"`
 }
 
 type Comment struct {
-	ID        string    `json:"id"`
-	Content   string    `json:"content"`
-	PostedBy  *User     `json:"postedBy"`
-	CreatedAt time.Time `json:"createdAt"`
+	ID        string      `json:"id"`
+	Content   string      `json:"content"`
+	PostedBy  *model.User `json:"postedBy"`
+	CreatedAt time.Time   `json:"createdAt"`
 }
 
 type NewChatRoom struct {
@@ -33,11 +35,6 @@ type NewComment struct {
 }
 
 type NewUser struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
-type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
