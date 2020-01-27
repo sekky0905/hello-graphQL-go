@@ -3,7 +3,7 @@ package repository
 import (
 	"time"
 
-	"github.com/sekky0905/hello-graphQL-go/server/gqlapi/domain/model"
+	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 )
 
 // UserDTO は、User を表す。
@@ -15,7 +15,7 @@ type UserDTO struct {
 }
 
 // newUserDTOFromUser は、domain model の User から UserDTO を作成する。
-func newUserDTOFromUser(user model.User) *UserDTO {
+func newUserDTOFromUser(user *model.User) *UserDTO {
 	return &UserDTO{
 		ID:        user.ID,
 		Name:      user.Name,
@@ -31,7 +31,7 @@ type UserRepository struct {
 }
 
 // AddUser は、User を追加する。
-func (r *UserRepository) AddUser(user model.User) {
+func (r *UserRepository) AddUser(user *model.User) {
 	u := newUserDTOFromUser(user)
 	r.MockDB = append(r.MockDB, u)
 }
