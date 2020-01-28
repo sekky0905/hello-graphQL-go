@@ -2,19 +2,39 @@
 
 package gqlapi
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"time"
+
+	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
+)
+
+type ChatRoom struct {
+	ID        string      `json:"id"`
+	Title     string      `json:"title"`
+	Comments  []*Comment  `json:"comments"`
+	CreatedBy *model.User `json:"createdBy"`
+	CreatedAt time.Time   `json:"createdAt"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type Comment struct {
+	ID        string      `json:"id"`
+	Content   string      `json:"content"`
+	PostedBy  *model.User `json:"postedBy"`
+	CreatedAt time.Time   `json:"createdAt"`
 }
 
-type User struct {
+type NewChatRoom struct {
+	Title  string `json:"title"`
+	UserID string `json:"userID"`
+}
+
+type NewComment struct {
+	Content    string `json:"content"`
+	ChatRoomID string `json:"chatRoomID"`
+	UserID     string `json:"userID"`
+}
+
+type NewUser struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
