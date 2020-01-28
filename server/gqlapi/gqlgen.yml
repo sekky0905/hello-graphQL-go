@@ -18,3 +18,8 @@ models:
     fields:
       id:
         resolver: true
+  Comment:
+    model: github.com/sekky0905/hello-graphQL-go/server/domain/model.Comment
+    fields:
+      id:
+        resolver: true
