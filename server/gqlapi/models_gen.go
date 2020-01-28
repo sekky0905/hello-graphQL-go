@@ -9,23 +9,16 @@ import (
 )
 
 type ChatRoom struct {
-	ID        string      `json:"id"`
-	Title     string      `json:"title"`
-	Comments  []*Comment  `json:"comments"`
-	CreatedBy *model.User `json:"createdBy"`
-	CreatedAt time.Time   `json:"createdAt"`
-}
-
-type Comment struct {
-	ID        string      `json:"id"`
-	Content   string      `json:"content"`
-	PostedBy  *model.User `json:"postedBy"`
-	CreatedAt time.Time   `json:"createdAt"`
+	ID        string           `json:"id"`
+	Title     string           `json:"title"`
+	Comments  []*model.Comment `json:"comments"`
+	CreatedBy *model.User      `json:"createdBy"`
+	CreatedAt time.Time        `json:"createdAt"`
 }
 
 type NewChatRoom struct {
-	Title  string `json:"title"`
 	UserID string `json:"userID"`
+	Title  string `json:"title"`
 }
 
 type NewComment struct {
