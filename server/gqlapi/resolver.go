@@ -13,8 +13,9 @@ import (
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 
 type Resolver struct {
-	UserApplicationService    *application.UserApplicationService
-	CommentApplicationService *application.CommentApplicationService
+	UserApplicationService     *application.UserApplicationService
+	ChatRoomApplicationService *application.ChatRoomApplicationService
+	CommentApplicationService  *application.CommentApplicationService
 }
 
 // NewResolver は、Resolver を生成し、返す。
@@ -23,6 +24,11 @@ func NewResolver() *Resolver {
 		UserApplicationService: &application.UserApplicationService{
 			Repo: &repository.UserRepository{
 				MockDB: make([]*repository.UserDTO, 0),
+			},
+		},
+		ChatRoomApplicationService: &application.ChatRoomApplicationService{
+			Repo: &repository.ChatRoomRepository{
+				MockDB: make([]*repository.ChatRoomDTO, 0),
 			},
 		},
 		CommentApplicationService: &application.CommentApplicationService{
@@ -49,8 +55,8 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input NewUser) (*mode
 	return r.UserApplicationService.CreateUser(input.ID, input.Name), nil
 }
 
-func (r *mutationResolver) CreateChatRoom(ctx context.Context, input NewChatRoom) (*ChatRoom, error) {
-	panic("not implemented")
+func (r *mutationResolver) CreateChatRoom(ctx context.Context, input NewChatRoom) (*model.ChatRoom, error) {
+	return r.ChatRoomApplicationService.CreateChatRoom(input.UserID, input.Title)
 }
 func (r *mutationResolver) CreateComment(ctx context.Context, input NewComment) (*model.Comment, error) {
 	return r.CommentApplicationService.CreateComment(input.UserID, input.ChatRoomID, input.Content)
