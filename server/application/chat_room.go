@@ -18,6 +18,6 @@ func (s ChatRoomApplicationService) CreateChatRoom(userID, title string) (*model
 		return nil, xerrors.Errorf("failed to generate comment: %w", err)
 	}
 	// 普通だと諸々の処理を行う。
-	s.Repo.AddChatRoom(chatRoomID, comment)
+	s.Repo.AddChatRoom(comment)
 	return comment, nil
 }
