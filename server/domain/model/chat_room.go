@@ -11,8 +11,8 @@ import (
 // ChatRoom は、チャットルームを表す。
 type ChatRoom struct {
 	ID        string
-	Title     string
 	UserID    string
+	Title     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
