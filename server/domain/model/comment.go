@@ -26,7 +26,7 @@ func NewComment(userID, chatRoomID, content string) (*Comment, error) {
 	}
 
 	return &Comment{
-		ID:         fmt.Sprintf("user_%s", uid.String()),
+		ID:         fmt.Sprintf("comment_%s", uid.String()),
 		UserID:     userID,
 		ChatRoomID: chatRoomID,
 		Content:    content,
