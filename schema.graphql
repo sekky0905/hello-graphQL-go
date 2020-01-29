@@ -33,8 +33,8 @@ input NewUser {
 }
 
 input NewChatRoom {
-    title: String!
     userID: String!
+    title: String!
 }
 
 input NewComment {
