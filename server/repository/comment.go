@@ -20,7 +20,7 @@ type CommentDTO struct {
 func newCommentDTOFromComment(chatRoomID string, comment *model.Comment) *CommentDTO {
 	return &CommentDTO{
 		ID:         comment.ID,
-		UserID:     comment.PostedBy.ID,
+		UserID:     comment.UserID,
 		ChatRoomID: chatRoomID,
 		Content:    comment.Content,
 		CreatedAt:  comment.CreatedAt,
