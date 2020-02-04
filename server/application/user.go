@@ -10,6 +10,11 @@ type UserApplicationService struct {
 	Repo *repository.UserRepository
 }
 
+// GetUserList は、User の一覧を取得する。
+func (s UserApplicationService) GetUserList() []*model.User {
+	return s.GetUserList()
+}
+
 // CreateUser は、User を作成する。
 func (s UserApplicationService) CreateUser(id, name string) *model.User {
 	user := model.NewUser(id, name)
