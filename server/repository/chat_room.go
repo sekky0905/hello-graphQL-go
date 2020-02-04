@@ -54,6 +54,18 @@ func (r *ChatRoomRepository) GetChatRoomList() []*model.ChatRoom {
 	return rooms
 }
 
+// GetChatRoomListByUserID は、指定された UserID を持つ ChatRoom の一覧を取得する。
+func (r *ChatRoomRepository) GetChatRoomListByUserID(userID string) []*model.ChatRoom {
+	var rooms []*model.ChatRoom
+	for _, dto := range r.MockDB {
+		if dto.UserID == userID {
+			rooms = append(rooms, newChatRoomFromChatRoomDTO(dto))
+		}
+	}
+
+	return rooms
+}
+
 // AddChatRoom は、ChatRoom を追加する。
 func (r *ChatRoomRepository) AddChatRoom(chatRoom *model.ChatRoom) {
 	c := newChatRoomDTOFromChatRoom(chatRoom)
