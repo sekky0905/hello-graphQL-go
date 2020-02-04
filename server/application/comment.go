@@ -11,6 +11,11 @@ type CommentApplicationService struct {
 	Repo *repository.CommentRepository
 }
 
+// GetCommentListByUserID は、指定された UserID を持つ Comment の一覧を取得する。
+func (s CommentApplicationService) GetCommentListByUserID(userID string) []*model.Comment {
+	return s.Repo.GetCommentListByUserID(userID)
+}
+
 // CreateComment は、Comment を作成する。
 func (s CommentApplicationService) CreateComment(userID, chatRoomID, content string) (*model.Comment, error) {
 	comment, err := model.NewComment(userID, chatRoomID, content)
