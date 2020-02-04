@@ -40,6 +40,17 @@ type UserRepository struct {
 	MockDB []*UserDTO
 }
 
+// GetUserByID は、指定した ID を持っている User を取得する。
+func (r *UserRepository) GetUserByID(id string) *model.User {
+	for _, dto := range r.MockDB {
+		if dto.ID == id {
+			return newUserFromUserDTO(dto)
+		}
+	}
+
+	return nil
+}
+
 // GetUserList は、User の一覧を取得する。
 func (r *UserRepository) GetUserList() []*model.User {
 	n := len(r.MockDB)
