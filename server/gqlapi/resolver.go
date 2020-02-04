@@ -63,15 +63,3 @@ func (r *queryResolver) ChatRooms(ctx context.Context) ([]*model.ChatRoom, error
 func (r *queryResolver) ChatRoom(ctx context.Context, chatRoomID string) (*model.ChatRoom, error) {
 	panic("not implemented")
 }
-
-type userResolver struct{ *Resolver }
-
-func (r *userResolver) ID(ctx context.Context, obj *model.User) (string, error) {
-	panic("not implemented")
-}
-func (r *userResolver) ChatRooms(ctx context.Context, obj *model.User) ([]*model.ChatRoom, error) {
-	panic("not implemented")
-}
-func (r *userResolver) Comments(ctx context.Context, obj *model.User) ([]*model.Comment, error) {
-	panic("not implemented")
-}
