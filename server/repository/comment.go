@@ -58,6 +58,18 @@ func (r *CommentRepository) GetCommentListByUserID(userID string) []*model.Comme
 	return comments
 }
 
+// GetCommentListByChatRoomID は、指定された ChatRoomID を持つ Comment の一覧を取得する。
+func (r *CommentRepository) GetCommentListByChatRoomID(chatRoomID string) []*model.Comment {
+	var comments []*model.Comment
+	for _, dto := range r.MockDB {
+		if dto.ChatRoomID == chatRoomID {
+			comments = append(comments, newCommentFromCommentDTO(dto))
+		}
+	}
+
+	return comments
+}
+
 // AddComment は、Comment を追加する。
 func (r *CommentRepository) AddComment(chatRoomID string, comment *model.Comment) {
 	c := newCommentDTOFromComment(chatRoomID, comment)
