@@ -16,6 +16,11 @@ func (s CommentApplicationService) GetCommentListByUserID(userID string) []*mode
 	return s.Repo.GetCommentListByUserID(userID)
 }
 
+// GetCommentListByChatRoomID は、指定された ChatRoomID を持つ Comment の一覧を取得する。
+func (s CommentApplicationService) GetCommentListByChatRoomID(userID string) []*model.Comment {
+	return s.Repo.GetCommentListByChatRoomID(userID)
+}
+
 // CreateComment は、Comment を作成する。
 func (s CommentApplicationService) CreateComment(userID, chatRoomID, content string) (*model.Comment, error) {
 	comment, err := model.NewComment(userID, chatRoomID, content)
