@@ -55,18 +55,6 @@ func (r *Resolver) User() UserResolver {
 	return &userResolver{r}
 }
 
-type chatRoomResolver struct{ *Resolver }
-
-func (r *chatRoomResolver) ID(ctx context.Context, obj *model.ChatRoom) (string, error) {
-	panic("not implemented")
-}
-func (r *chatRoomResolver) Comments(ctx context.Context, obj *model.ChatRoom) ([]*model.Comment, error) {
-	panic("not implemented")
-}
-func (r *chatRoomResolver) CreatedBy(ctx context.Context, obj *model.ChatRoom) (*model.User, error) {
-	panic("not implemented")
-}
-
 type commentResolver struct{ *Resolver }
 
 func (r *commentResolver) ID(ctx context.Context, obj *model.Comment) (string, error) {
