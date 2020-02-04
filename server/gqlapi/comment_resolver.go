@@ -2,6 +2,7 @@ package gqlapi
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 )
@@ -9,8 +10,12 @@ import (
 type commentResolver struct{ *Resolver }
 
 func (r *commentResolver) ID(ctx context.Context, obj *model.Comment) (string, error) {
-	panic("not implemented")
+	if obj == nil {
+		return "", nil
+	}
+
+	return fmt.Sprintf("Comment:%s", obj.ID), nil
 }
 func (r *commentResolver) PostedBy(ctx context.Context, obj *model.Comment) (*model.User, error) {
-	panic("not implemented")
+	return r.UserApplicationService.GetUserByID(obj.UserID), nil
 }
