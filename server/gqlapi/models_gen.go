@@ -2,20 +2,6 @@
 
 package gqlapi
 
-import (
-	"time"
-
-	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
-)
-
-type ChatRoom struct {
-	ID        string           `json:"id"`
-	Title     string           `json:"title"`
-	Comments  []*model.Comment `json:"comments"`
-	CreatedBy *model.User      `json:"createdBy"`
-	CreatedAt time.Time        `json:"createdAt"`
-}
-
 type NewChatRoom struct {
 	UserID string `json:"userID"`
 	Title  string `json:"title"`
