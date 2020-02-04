@@ -3,12 +3,41 @@ package gqlapi
 import (
 	"context"
 
+	"github.com/sekky0905/hello-graphQL-go/server/repository"
+
+	"github.com/sekky0905/hello-graphQL-go/server/application"
+
 	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 )
 
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 
-type Resolver struct{}
+type Resolver struct {
+	UserApplicationService     *application.UserApplicationService
+	ChatRoomApplicationService *application.ChatRoomApplicationService
+	CommentApplicationService  *application.CommentApplicationService
+}
+
+// NewResolver は、Resolver を生成し、返す。
+func NewResolver() *Resolver {
+	return &Resolver{
+		UserApplicationService: &application.UserApplicationService{
+			Repo: &repository.UserRepository{
+				MockDB: make([]*repository.UserDTO, 0),
+			},
+		},
+		ChatRoomApplicationService: &application.ChatRoomApplicationService{
+			Repo: &repository.ChatRoomRepository{
+				MockDB: make([]*repository.ChatRoomDTO, 0),
+			},
+		},
+		CommentApplicationService: &application.CommentApplicationService{
+			Repo: &repository.CommentRepository{
+				MockDB: make([]*repository.CommentDTO, 0),
+			},
+		},
+	}
+}
 
 func (r *Resolver) ChatRoom() ChatRoomResolver {
 	return &chatRoomResolver{r}
@@ -44,18 +73,6 @@ func (r *commentResolver) ID(ctx context.Context, obj *model.Comment) (string, e
 	panic("not implemented")
 }
 func (r *commentResolver) PostedBy(ctx context.Context, obj *model.Comment) (*model.User, error) {
-	panic("not implemented")
-}
-
-type mutationResolver struct{ *Resolver }
-
-func (r *mutationResolver) CreateUser(ctx context.Context, input NewUser) (*model.User, error) {
-	panic("not implemented")
-}
-func (r *mutationResolver) CreateChatRoom(ctx context.Context, input NewChatRoom) (*model.ChatRoom, error) {
-	panic("not implemented")
-}
-func (r *mutationResolver) CreateComment(ctx context.Context, input NewComment) (*model.Comment, error) {
 	panic("not implemented")
 }
 
