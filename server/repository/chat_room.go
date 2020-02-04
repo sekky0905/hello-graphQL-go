@@ -26,10 +26,32 @@ func newChatRoomDTOFromChatRoom(chatRoom *model.ChatRoom) *ChatRoomDTO {
 	}
 }
 
+// newChatRoomFromChatRoomDTO は、chatRoomDTO から domain model の ChatRoom を作成する。
+func newChatRoomFromChatRoomDTO(dto *ChatRoomDTO) *model.ChatRoom {
+	return &model.ChatRoom{
+		ID:        dto.ID,
+		UserID:    dto.UserID,
+		Title:     dto.Title,
+		CreatedAt: dto.CreatedAt,
+		UpdatedAt: dto.UpdatedAt,
+	}
+}
+
 // ChatRoomRepository は、ChatRoom の Repository。
 // 練習用の Project なので、Interface 等は定義しない。
 type ChatRoomRepository struct {
 	MockDB []*ChatRoomDTO
+}
+
+// GetChatRoomList は、ChatRoom の一覧を取得する。
+func (r *ChatRoomRepository) GetChatRoomList() []*model.ChatRoom {
+	n := len(r.MockDB)
+	rooms := make([]*model.ChatRoom, n, n)
+	for i, dto := range r.MockDB {
+		rooms[i] = newChatRoomFromChatRoomDTO(dto)
+	}
+
+	return rooms
 }
 
 // AddChatRoom は、ChatRoom を追加する。
