@@ -2,6 +2,7 @@ package gqlapi
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 )
@@ -9,11 +10,15 @@ import (
 type chatRoomResolver struct{ *Resolver }
 
 func (r *chatRoomResolver) ID(ctx context.Context, obj *model.ChatRoom) (string, error) {
-	panic("not implemented")
+	if obj == nil {
+		return "", nil
+	}
+
+	return fmt.Sprintf("ChatRoom:%s", obj.ID), nil
 }
 func (r *chatRoomResolver) Comments(ctx context.Context, obj *model.ChatRoom) ([]*model.Comment, error) {
-	panic("not implemented")
+	return r.CommentApplicationService.GetCommentListByChatRoomID(obj.ID), nil
 }
 func (r *chatRoomResolver) CreatedBy(ctx context.Context, obj *model.ChatRoom) (*model.User, error) {
-	panic("not implemented")
+	return r.UserApplicationService.GetUserByID(obj.UserID), nil
 }
