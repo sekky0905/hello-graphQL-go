@@ -55,15 +55,6 @@ func (r *Resolver) User() UserResolver {
 	return &userResolver{r}
 }
 
-type commentResolver struct{ *Resolver }
-
-func (r *commentResolver) ID(ctx context.Context, obj *model.Comment) (string, error) {
-	panic("not implemented")
-}
-func (r *commentResolver) PostedBy(ctx context.Context, obj *model.Comment) (*model.User, error) {
-	panic("not implemented")
-}
-
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) ChatRooms(ctx context.Context) ([]*model.ChatRoom, error) {
