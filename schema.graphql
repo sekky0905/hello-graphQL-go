@@ -3,8 +3,10 @@ scalar Time
 type ChatRoom {
     id: ID!
     title: String!
-    # client から呼び出される時には、フィールドを指定されて呼び出されるため、完全な形でスキーマを定義してしまって良い
-    # 例えば、チャットルームの一覧を表示する際に、comments はいらない場合には、client 側でそれ以外のフィールドを指定する形にする
+    """
+    client から呼び出される時には、必要なフィールドを指定されて呼び出されるため、完全な形でスキーマを定義してしまって良い
+    例えば、チャットルームの一覧を表示する際に、comments はいらない場合には、client 側でそれ以外のフィールドを指定する形にする
+    """
     comments: [Comment] # 関連は N に1の方の ID を持たせるのではなく、1に N を埋め込む 
     createdBy: User!
     createdAt: Time!
@@ -20,6 +22,13 @@ type Comment {
 type User {
     id: ID!
     name: String!
+    """
+    client から呼び出される時には、必要なフィールドを指定されて呼び出されるため、完全な形でスキーマを定義してしまって良い
+    User が作成した ChatRoom や 投稿した Comment 一覧も見ることができるようになる
+    双方向グラフにしている
+    """
+    chatRooms: [ChatRoom]
+    comments: [Comment]
 }
 
 type Query {
