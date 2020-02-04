@@ -24,10 +24,31 @@ func newUserDTOFromUser(user *model.User) *UserDTO {
 	}
 }
 
+// newUserFromUserDTO は、UserDTO から domain model の User を作成する。
+func newUserFromUserDTO(dto *UserDTO) *model.User {
+	return &model.User{
+		ID:        dto.ID,
+		Name:      dto.Name,
+		CreatedAt: dto.CreatedAt,
+		UpdatedAt: dto.UpdatedAt,
+	}
+}
+
 // UserRepository は、User の Repository。
 // 練習用の Project なので、Interface 等は定義しない。
 type UserRepository struct {
 	MockDB []*UserDTO
+}
+
+// GetUserList は、User の一覧を取得する。
+func (r *UserRepository) GetUserList() []*model.User {
+	n := len(r.MockDB)
+	users := make([]*model.User, n, n)
+	for i, dto := range r.MockDB {
+		users[i] = newUserFromUserDTO(dto)
+	}
+
+	return users
 }
 
 // AddUser は、User を追加する。
