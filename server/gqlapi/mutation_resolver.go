@@ -2,7 +2,6 @@ package gqlapi
 
 import (
 	"context"
-	"log"
 
 	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 )
@@ -10,7 +9,6 @@ import (
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input NewUser) (*model.User, error) {
-	log.Println("-----------")
 	return r.UserApplicationService.CreateUser(input.ID, input.Name), nil
 }
 func (r *mutationResolver) CreateChatRoom(ctx context.Context, input NewChatRoom) (*model.ChatRoom, error) {

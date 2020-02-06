@@ -1165,7 +1165,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().User(rctx, args["userID"].(*string))
+		return ec.resolvers.Query().User(rctx, args["userID"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
