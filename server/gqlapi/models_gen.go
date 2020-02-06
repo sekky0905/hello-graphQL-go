@@ -2,17 +2,20 @@
 
 package gqlapi
 
+// チャットルームを登録する際の引数です。
 type NewChatRoom struct {
 	UserID string `json:"userID"`
 	Title  string `json:"title"`
 }
 
+// コメントを登録する際の引数です。
 type NewComment struct {
 	Content    string `json:"content"`
 	ChatRoomID string `json:"chatRoomID"`
 	UserID     string `json:"userID"`
 }
 
+// ユーザーを登録する際の引数です。
 type NewUser struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`

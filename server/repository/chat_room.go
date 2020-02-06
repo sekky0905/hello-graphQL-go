@@ -43,6 +43,17 @@ type ChatRoomRepository struct {
 	MockDB []*ChatRoomDTO
 }
 
+// GetChatRoomByID は、ChatRoom を1件取得する。
+func (r *ChatRoomRepository) GetChatRoomByID(id string) *model.ChatRoom {
+	for _, dto := range r.MockDB {
+		if dto.ID == id {
+			return newChatRoomFromChatRoomDTO(dto)
+		}
+	}
+
+	return nil
+}
+
 // GetChatRoomList は、ChatRoom の一覧を取得する。
 func (r *ChatRoomRepository) GetChatRoomList() []*model.ChatRoom {
 	n := len(r.MockDB)

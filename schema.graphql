@@ -37,8 +37,13 @@ type Comment {
 }
 
 type Query {
+    users: [User]
+    user(userID: ID): User
     chatRooms: [ChatRoom]
+    chatRoomsByUserID(userID: ID!): [ChatRoom]
     chatRoom(chatRoomID: ID!): ChatRoom
+    comments(chatRoomID: ID!): [Comment]
+    commentsByUserID(userID: ID!): [Comment]
 }
 
 """
