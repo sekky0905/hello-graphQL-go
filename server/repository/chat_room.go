@@ -43,6 +43,13 @@ type ChatRoomRepository struct {
 	MockDB []*ChatRoomDTO
 }
 
+// IsExistID は、引数で渡された id を持つ ChatRoom が既に存在するかどうかを確認する。
+func (r *ChatRoomRepository) IsExistID(id string) bool {
+	room := r.GetChatRoomByID(id)
+
+	return room != nil
+}
+
 // GetChatRoomByID は、ChatRoom を1件取得する。
 func (r *ChatRoomRepository) GetChatRoomByID(id string) *model.ChatRoom {
 	for _, dto := range r.MockDB {
