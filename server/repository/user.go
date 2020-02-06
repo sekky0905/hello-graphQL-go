@@ -40,6 +40,13 @@ type UserRepository struct {
 	MockDB []*UserDTO
 }
 
+// IsExistID は、引数で渡された id を持つ User が既に存在するかどうかを確認する。
+func (r *UserRepository) IsExistID(id string) bool {
+	user := r.GetUserByID(id)
+	return user != nil
+
+}
+
 // GetUserByID は、指定した ID を持っている User を取得する。
 func (r *UserRepository) GetUserByID(id string) *model.User {
 	for _, dto := range r.MockDB {
