@@ -46,6 +46,24 @@ type CommentRepository struct {
 	MockDB []*CommentDTO
 }
 
+// IsExistID は、引数で渡された id を持つ Comment が既に存在するかどうかを確認する。
+func (r *CommentRepository) IsExistID(id string) bool {
+	room := r.GetCommentByID(id)
+
+	return room != nil
+}
+
+// GetCommentByID は、Comment を1件取得する。
+func (r *CommentRepository) GetCommentByID(id string) *model.Comment {
+	for _, dto := range r.MockDB {
+		if dto.ID == id {
+			return newCommentFromCommentDTO(dto)
+		}
+	}
+
+	return nil
+}
+
 // GetCommentListByUserID は、指定された UserID を持つ Comment の一覧を取得する。
 func (r *CommentRepository) GetCommentListByUserID(userID string) []*model.Comment {
 	var comments []*model.Comment
