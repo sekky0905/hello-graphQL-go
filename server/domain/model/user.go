@@ -1,6 +1,12 @@
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+
+	"github.com/google/uuid"
+	"golang.org/x/xerrors"
+)
 
 // User は、ユーザーを表す。
 type User struct {
@@ -11,11 +17,16 @@ type User struct {
 }
 
 // NewUser は、User を生成し、返す。
-func NewUser(id, name string) *User {
+func NewUser(name string) (*User, error) {
+	uid, err := uuid.NewUUID()
+	if err != nil {
+		return nil, xerrors.Errorf("failed to generate uuid: %w", err)
+	}
+
 	return &User{
-		ID:        id,
+		ID:        fmt.Sprintf("user_%s", uid.String()),
 		Name:      name,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-	}
+	}, nil
 }

@@ -9,7 +9,7 @@ import (
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input NewUser) (*model.User, error) {
-	return r.UserApplicationService.CreateUser(input.ID, input.Name), nil
+	return r.UserApplicationService.CreateUser(input.Name)
 }
 func (r *mutationResolver) CreateChatRoom(ctx context.Context, input NewChatRoom) (*model.ChatRoom, error) {
 	return r.ChatRoomApplicationService.CreateChatRoom(input.UserID, input.Title)

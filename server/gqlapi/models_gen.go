@@ -17,6 +17,5 @@ type NewComment struct {
 
 // ユーザーを登録する際の引数です。
 type NewUser struct {
-	ID   string `json:"id"`
 	Name string `json:"name"`
 }

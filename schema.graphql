@@ -50,7 +50,6 @@ type Query {
 ユーザーを登録する際の引数です。
 """
 input NewUser {
-    id: String!
     name: String! # 簡易化のためにパスワード等は設定しない
 }
 

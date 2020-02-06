@@ -3,6 +3,7 @@ package application
 import (
 	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 	"github.com/sekky0905/hello-graphQL-go/server/repository"
+	"golang.org/x/xerrors"
 )
 
 // UserApplicationService は、User の ApplicationService。
@@ -21,9 +22,12 @@ func (s UserApplicationService) GetUserList() []*model.User {
 }
 
 // CreateUser は、User を作成する。
-func (s UserApplicationService) CreateUser(id, name string) *model.User {
-	user := model.NewUser(id, name)
+func (s UserApplicationService) CreateUser(name string) (*model.User, error) {
+	user, err := model.NewUser(name)
+	if err != nil {
+		return nil, xerrors.Errorf("failed to generate user: %w", err)
+	}
 	// 普通だと諸々の処理を行う。
 	s.Repo.AddUser(user)
-	return user
+	return user, nil
 }

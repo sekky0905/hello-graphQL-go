@@ -448,7 +448,6 @@ type Query {
 ユーザーを登録する際の引数です。
 """
 input NewUser {
-    id: String!
     name: String! # 簡易化のためにパスワード等は設定しない
 }
 
@@ -2806,12 +2805,6 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-			it.ID, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "name":
 			var err error
 			it.Name, err = ec.unmarshalNString2string(ctx, v)
