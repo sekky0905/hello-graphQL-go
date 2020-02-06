@@ -26,10 +26,55 @@ func newChatRoomDTOFromChatRoom(chatRoom *model.ChatRoom) *ChatRoomDTO {
 	}
 }
 
+// newChatRoomFromChatRoomDTO は、chatRoomDTO から domain model の ChatRoom を作成する。
+func newChatRoomFromChatRoomDTO(dto *ChatRoomDTO) *model.ChatRoom {
+	return &model.ChatRoom{
+		ID:        dto.ID,
+		UserID:    dto.UserID,
+		Title:     dto.Title,
+		CreatedAt: dto.CreatedAt,
+		UpdatedAt: dto.UpdatedAt,
+	}
+}
+
 // ChatRoomRepository は、ChatRoom の Repository。
 // 練習用の Project なので、Interface 等は定義しない。
 type ChatRoomRepository struct {
 	MockDB []*ChatRoomDTO
+}
+
+// GetChatRoomByID は、ChatRoom を1件取得する。
+func (r *ChatRoomRepository) GetChatRoomByID(id string) *model.ChatRoom {
+	for _, dto := range r.MockDB {
+		if dto.ID == id {
+			return newChatRoomFromChatRoomDTO(dto)
+		}
+	}
+
+	return nil
+}
+
+// GetChatRoomList は、ChatRoom の一覧を取得する。
+func (r *ChatRoomRepository) GetChatRoomList() []*model.ChatRoom {
+	n := len(r.MockDB)
+	rooms := make([]*model.ChatRoom, n, n)
+	for i, dto := range r.MockDB {
+		rooms[i] = newChatRoomFromChatRoomDTO(dto)
+	}
+
+	return rooms
+}
+
+// GetChatRoomListByUserID は、指定された UserID を持つ ChatRoom の一覧を取得する。
+func (r *ChatRoomRepository) GetChatRoomListByUserID(userID string) []*model.ChatRoom {
+	var rooms []*model.ChatRoom
+	for _, dto := range r.MockDB {
+		if dto.UserID == userID {
+			rooms = append(rooms, newChatRoomFromChatRoomDTO(dto))
+		}
+	}
+
+	return rooms
 }
 
 // AddChatRoom は、ChatRoom を追加する。

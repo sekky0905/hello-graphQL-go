@@ -1,15 +1,34 @@
 scalar Time
 
+"""
+ユーザーに関する情報
+"""
+type User {
+    id: ID!
+    name: String!
+    # client から呼び出される時には、必要なフィールドを指定されて呼び出されるため、完全な形でスキーマを定義してしまって良い
+    # User が作成した ChatRoom や 投稿した Comment 一覧も見ることができるようになる
+    # 双方向グラフにしている
+    chatRooms: [ChatRoom]
+    comments: [Comment]
+}
+
+"""
+チャットルームに関する情報
+"""
 type ChatRoom {
     id: ID!
     title: String!
-    # client から呼び出される時には、フィールドを指定されて呼び出されるため、完全な形でスキーマを定義してしまって良い
+    # client から呼び出される時には、必要なフィールドを指定されて呼び出されるため、完全な形でスキーマを定義してしまって良い
     # 例えば、チャットルームの一覧を表示する際に、comments はいらない場合には、client 側でそれ以外のフィールドを指定する形にする
-    comments: [Comment] # 関連は N に1の方の ID を持たせるのではなく、1に N を埋め込む 
+    comments: [Comment] # 関連は N に1の方の ID を持たせるのではなく、1に N を埋め込む
     createdBy: User!
     createdAt: Time!
 }
 
+"""
+コメントに関する情報
+"""
 type Comment {
     id: ID!
     content: String!
@@ -17,26 +36,35 @@ type Comment {
     createdAt: Time!
 }
 
-type User {
-    id: ID!
-    name: String!
-}
-
 type Query {
+    users: [User]
+    user(userID: ID): User
     chatRooms: [ChatRoom]
+    chatRoomsByUserID(userID: ID!): [ChatRoom]
     chatRoom(chatRoomID: ID!): ChatRoom
+    comments(chatRoomID: ID!): [Comment]
+    commentsByUserID(userID: ID!): [Comment]
 }
 
+"""
+ユーザーを登録する際の引数です。
+"""
 input NewUser {
     id: String!
     name: String! # 簡易化のためにパスワード等は設定しない
 }
 
+"""
+チャットルームを登録する際の引数です。
+"""
 input NewChatRoom {
     userID: String!
     title: String!
 }
 
+"""
+コメントを登録する際の引数です。
+"""
 input NewComment {
     content: String!
     chatRoomID: String!

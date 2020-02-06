@@ -3,11 +3,9 @@ package gqlapi
 import (
 	"context"
 
-	"github.com/sekky0905/hello-graphQL-go/server/repository"
-
 	"github.com/sekky0905/hello-graphQL-go/server/application"
-
 	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
+	"github.com/sekky0905/hello-graphQL-go/server/repository"
 )
 
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
@@ -39,6 +37,12 @@ func NewResolver() *Resolver {
 	}
 }
 
+func (r *Resolver) ChatRoom() ChatRoomResolver {
+	return &chatRoomResolver{r}
+}
+func (r *Resolver) Comment() CommentResolver {
+	return &commentResolver{r}
+}
 func (r *Resolver) Mutation() MutationResolver {
 	return &mutationResolver{r}
 }
@@ -49,30 +53,29 @@ func (r *Resolver) User() UserResolver {
 	return &userResolver{r}
 }
 
-type mutationResolver struct{ *Resolver }
-
-func (r *mutationResolver) CreateUser(ctx context.Context, input NewUser) (*model.User, error) {
-	return r.UserApplicationService.CreateUser(input.ID, input.Name), nil
-}
-
-func (r *mutationResolver) CreateChatRoom(ctx context.Context, input NewChatRoom) (*model.ChatRoom, error) {
-	return r.ChatRoomApplicationService.CreateChatRoom(input.UserID, input.Title)
-}
-func (r *mutationResolver) CreateComment(ctx context.Context, input NewComment) (*model.Comment, error) {
-	return r.CommentApplicationService.CreateComment(input.UserID, input.ChatRoomID, input.Content)
-}
-
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) ChatRooms(ctx context.Context) ([]*ChatRoom, error) {
-	panic("not implemented")
-}
-func (r *queryResolver) ChatRoom(ctx context.Context, chatRoomID string) (*ChatRoom, error) {
-	panic("not implemented")
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	return r.UserApplicationService.GetUserList(), nil
 }
 
-type userResolver struct{ *Resolver }
+func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
+	return r.UserApplicationService.GetUserByID(userID), nil
+}
 
-func (r *userResolver) ID(ctx context.Context, obj *model.User) (string, error) {
-	panic("not implemented")
+func (r *queryResolver) ChatRooms(ctx context.Context) ([]*model.ChatRoom, error) {
+	return r.ChatRoomApplicationService.GetChatRoomList(), nil
+}
+
+func (r *queryResolver) ChatRoomsByUserID(ctx context.Context, userID string) ([]*model.ChatRoom, error) {
+	return r.ChatRoomApplicationService.GetChatRoomListByUserID(userID), nil
+}
+func (r *queryResolver) ChatRoom(ctx context.Context, chatRoomID string) (*model.ChatRoom, error) {
+	return r.ChatRoomApplicationService.GetChatRoomByID(chatRoomID), nil
+}
+func (r *queryResolver) Comments(ctx context.Context, chatRoomID string) ([]*model.Comment, error) {
+	return r.CommentApplicationService.GetCommentListByChatRoomID(chatRoomID), nil
+}
+func (r *queryResolver) CommentsByUserID(ctx context.Context, userID string) ([]*model.Comment, error) {
+	return r.CommentApplicationService.GetCommentListByUserID(userID), nil
 }

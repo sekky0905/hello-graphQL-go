@@ -11,6 +11,21 @@ type ChatRoomApplicationService struct {
 	Repo *repository.ChatRoomRepository
 }
 
+// GetChatRoomByID は、ChatRoom を1件取得する。
+func (s ChatRoomApplicationService) GetChatRoomByID(id string) *model.ChatRoom {
+	return s.Repo.GetChatRoomByID(id)
+}
+
+// GetChatRoomList は、ChatRoom の一覧を取得する。
+func (s ChatRoomApplicationService) GetChatRoomList() []*model.ChatRoom {
+	return s.Repo.GetChatRoomList()
+}
+
+// GetChatRoomListByUserID は、指定された UserID を持つ ChatRoom の一覧を取得する。
+func (s ChatRoomApplicationService) GetChatRoomListByUserID(userID string) []*model.ChatRoom {
+	return s.Repo.GetChatRoomListByUserID(userID)
+}
+
 // CreateChatRoom は、ChatRoom を作成する。
 func (s ChatRoomApplicationService) CreateChatRoom(userID, title string) (*model.ChatRoom, error) {
 	comment, err := model.NewChatRoom(userID, title)

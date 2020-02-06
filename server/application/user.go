@@ -10,6 +10,16 @@ type UserApplicationService struct {
 	Repo *repository.UserRepository
 }
 
+// GetUserByID は、指定した ID を持っている User を取得する。
+func (s UserApplicationService) GetUserByID(id string) *model.User {
+	return s.Repo.GetUserByID(id)
+}
+
+// GetUserList は、User の一覧を取得する。
+func (s UserApplicationService) GetUserList() []*model.User {
+	return s.Repo.GetUserList()
+}
+
 // CreateUser は、User を作成する。
 func (s UserApplicationService) CreateUser(id, name string) *model.User {
 	user := model.NewUser(id, name)
