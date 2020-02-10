@@ -38,12 +38,12 @@ type Comment {
 
 type Query {
     users: [User]
-    user(userID: ID): User
-    chatRooms: [ChatRoom]
-    chatRoomsByUserID(userID: ID!): [ChatRoom]
+    user(userID: ID!): User
+    # chatRoom に紐づく comment はここから全部引くことができる
+    chatRooms(userID: ID): [ChatRoom]
     chatRoom(chatRoomID: ID!): ChatRoom
-    comments(chatRoomID: ID!): [Comment]
-    commentsByUserID(userID: ID!): [Comment]
+    # user 毎に comment を引きたい場合
+    commentsByUser(userID: ID!): [Comment]
 }
 
 """
