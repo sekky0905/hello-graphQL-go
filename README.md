@@ -2,7 +2,7 @@
 Simple sample of graphQL
 
 
-## クエリのサンプル
+## Query Sample 
 
 ```graphql
 mutation createUser {
