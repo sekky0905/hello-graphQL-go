@@ -1,6 +1,13 @@
 # hello-graphQL-go
 Simple sample of graphQL
 
+## How to run
+
+```bash
+$ go run ./server/server.go
+$ open http://localhost:8080/
+```
+
 
 ## クエリのサンプル
 
