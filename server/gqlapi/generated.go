@@ -69,13 +69,11 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		ChatRoom          func(childComplexity int, chatRoomID string) int
-		ChatRooms         func(childComplexity int) int
-		ChatRoomsByUserID func(childComplexity int, userID string) int
-		Comments          func(childComplexity int, chatRoomID string) int
-		CommentsByUserID  func(childComplexity int, userID string) int
-		User              func(childComplexity int, userID *string) int
-		Users             func(childComplexity int) int
+		ChatRoom       func(childComplexity int, chatRoomID string) int
+		ChatRooms      func(childComplexity int, userID *string) int
+		CommentsByUser func(childComplexity int, userID string) int
+		User           func(childComplexity int, userID string) int
+		Users          func(childComplexity int) int
 	}
 
 	User struct {
@@ -105,11 +103,9 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Users(ctx context.Context) ([]*model.User, error)
 	User(ctx context.Context, userID string) (*model.User, error)
-	ChatRooms(ctx context.Context) ([]*model.ChatRoom, error)
-	ChatRoomsByUserID(ctx context.Context, userID string) ([]*model.ChatRoom, error)
+	ChatRooms(ctx context.Context, userID *string) ([]*model.ChatRoom, error)
 	ChatRoom(ctx context.Context, chatRoomID string) (*model.ChatRoom, error)
-	Comments(ctx context.Context, chatRoomID string) ([]*model.Comment, error)
-	CommentsByUserID(ctx context.Context, userID string) ([]*model.Comment, error)
+	CommentsByUser(ctx context.Context, userID string) ([]*model.Comment, error)
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *model.User) (string, error)
@@ -249,43 +245,24 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.ChatRooms(childComplexity), true
-
-	case "Query.chatRoomsByUserID":
-		if e.complexity.Query.ChatRoomsByUserID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_chatRoomsByUserID_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_chatRooms_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.ChatRoomsByUserID(childComplexity, args["userID"].(string)), true
+		return e.complexity.Query.ChatRooms(childComplexity, args["userID"].(*string)), true
 
-	case "Query.comments":
-		if e.complexity.Query.Comments == nil {
+	case "Query.commentsByUser":
+		if e.complexity.Query.CommentsByUser == nil {
 			break
 		}
 
-		args, err := ec.field_Query_comments_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_commentsByUser_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Comments(childComplexity, args["chatRoomID"].(string)), true
-
-	case "Query.commentsByUserID":
-		if e.complexity.Query.CommentsByUserID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_commentsByUserID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.CommentsByUserID(childComplexity, args["userID"].(string)), true
+		return e.complexity.Query.CommentsByUser(childComplexity, args["userID"].(string)), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -297,7 +274,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.User(childComplexity, args["userID"].(*string)), true
+		return e.complexity.Query.User(childComplexity, args["userID"].(string)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -436,12 +413,12 @@ type Comment {
 
 type Query {
     users: [User]
-    user(userID: ID): User
-    chatRooms: [ChatRoom]
-    chatRoomsByUserID(userID: ID!): [ChatRoom]
+    user(userID: ID!): User
+    # chatRoom に紐づく comment はここから全部引くことができる
+    chatRooms(userID: ID): [ChatRoom]
     chatRoom(chatRoomID: ID!): ChatRoom
-    comments(chatRoomID: ID!): [Comment]
-    commentsByUserID(userID: ID!): [Comment]
+    # user 毎に comment を引きたい場合
+    commentsByUser(userID: ID!): [Comment]
 }
 
 """
@@ -550,7 +527,21 @@ func (ec *executionContext) field_Query_chatRoom_args(ctx context.Context, rawAr
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_chatRoomsByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_chatRooms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["userID"]; ok {
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_commentsByUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -561,43 +552,15 @@ func (ec *executionContext) field_Query_chatRoomsByUserID_args(ctx context.Conte
 		}
 	}
 	args["userID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_commentsByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userID"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_comments_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["chatRoomID"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["chatRoomID"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
+	var arg0 string
 	if tmp, ok := rawArgs["userID"]; ok {
-		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1195,42 +1158,8 @@ func (ec *executionContext) _Query_chatRooms(ctx context.Context, field graphql.
 		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ChatRooms(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.ChatRoom)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOChatRoom2ᚕᚖgithubᚗcomᚋsekky0905ᚋhelloᚑgraphQLᚑgoᚋserverᚋdomainᚋmodelᚐChatRoom(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_chatRoomsByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_chatRoomsByUserID_args(ctx, rawArgs)
+	args, err := ec.field_Query_chatRooms_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -1239,7 +1168,7 @@ func (ec *executionContext) _Query_chatRoomsByUserID(ctx context.Context, field 
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ChatRoomsByUserID(rctx, args["userID"].(string))
+		return ec.resolvers.Query().ChatRooms(rctx, args["userID"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1295,7 +1224,7 @@ func (ec *executionContext) _Query_chatRoom(ctx context.Context, field graphql.C
 	return ec.marshalOChatRoom2ᚖgithubᚗcomᚋsekky0905ᚋhelloᚑgraphQLᚑgoᚋserverᚋdomainᚋmodelᚐChatRoom(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_commentsByUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1312,7 +1241,7 @@ func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.C
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_comments_args(ctx, rawArgs)
+	args, err := ec.field_Query_commentsByUser_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -1321,48 +1250,7 @@ func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Comments(rctx, args["chatRoomID"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Comment)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOComment2ᚕᚖgithubᚗcomᚋsekky0905ᚋhelloᚑgraphQLᚑgoᚋserverᚋdomainᚋmodelᚐComment(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_commentsByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_commentsByUserID_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx.Args = args
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().CommentsByUserID(rctx, args["userID"].(string))
+		return ec.resolvers.Query().CommentsByUser(rctx, args["userID"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3045,17 +2933,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_chatRooms(ctx, field)
 				return res
 			})
-		case "chatRoomsByUserID":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_chatRoomsByUserID(ctx, field)
-				return res
-			})
 		case "chatRoom":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -3067,7 +2944,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_chatRoom(ctx, field)
 				return res
 			})
-		case "comments":
+		case "commentsByUser":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -3075,18 +2952,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_comments(ctx, field)
-				return res
-			})
-		case "commentsByUserID":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_commentsByUserID(ctx, field)
+				res = ec._Query_commentsByUser(ctx, field)
 				return res
 			})
 		case "__type":

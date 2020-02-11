@@ -2,7 +2,6 @@ package gqlapi
 
 import (
 	"context"
-
 	"github.com/sekky0905/hello-graphQL-go/server/application"
 	"github.com/sekky0905/hello-graphQL-go/server/domain/model"
 	"github.com/sekky0905/hello-graphQL-go/server/repository"
@@ -58,24 +57,19 @@ type queryResolver struct{ *Resolver }
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return r.UserApplicationService.GetUserList(), nil
 }
-
 func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
 	return r.UserApplicationService.GetUserByID(userID), nil
 }
+func (r *queryResolver) ChatRooms(ctx context.Context, userID *string) ([]*model.ChatRoom, error) {
+	if userID != nil {
+		return r.ChatRoomApplicationService.GetChatRoomListByUserID(*userID), nil
+	}
 
-func (r *queryResolver) ChatRooms(ctx context.Context) ([]*model.ChatRoom, error) {
 	return r.ChatRoomApplicationService.GetChatRoomList(), nil
-}
-
-func (r *queryResolver) ChatRoomsByUserID(ctx context.Context, userID string) ([]*model.ChatRoom, error) {
-	return r.ChatRoomApplicationService.GetChatRoomListByUserID(userID), nil
 }
 func (r *queryResolver) ChatRoom(ctx context.Context, chatRoomID string) (*model.ChatRoom, error) {
 	return r.ChatRoomApplicationService.GetChatRoomByID(chatRoomID), nil
 }
-func (r *queryResolver) Comments(ctx context.Context, chatRoomID string) ([]*model.Comment, error) {
-	return r.CommentApplicationService.GetCommentListByChatRoomID(chatRoomID), nil
-}
-func (r *queryResolver) CommentsByUserID(ctx context.Context, userID string) ([]*model.Comment, error) {
+func (r *queryResolver) CommentsByUser(ctx context.Context, userID string) ([]*model.Comment, error) {
 	return r.CommentApplicationService.GetCommentListByUserID(userID), nil
 }
