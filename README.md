@@ -9,7 +9,7 @@ $ open http://localhost:8080/
 ```
 
 
-## クエリのサンプル
+## Query Sample 
 
 ```graphql
 mutation createUser {
